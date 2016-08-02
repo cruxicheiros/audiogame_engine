@@ -1,4 +1,4 @@
-from pydub import AudioSegment
+from pydub import AudioSegment, effects
 from pydub.playback import play
 from os import path
 from math import hypot, fabs, asin, sin, degrees
@@ -34,7 +34,8 @@ class AudioSource:
         else:
             sound = soundlist[0]
 
-        vol_sound = sound - hdist
+        vol_sound = effects.low_pass_filter(sound - hdist, 10000 / hdist)
+        
         
         if hdist != 0:
             print(degrees(asin((xdist * sin(90)) / hdist)))
@@ -51,22 +52,5 @@ class Listener:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
-
-
-## testing code below this line
-
-Player = Listener(1, 1)
-
-feet = AudioSource(1, 1)
-feet.LoadSound(["r-01.wav", "rb-01.wav"], "roar")
-
-
-for i in [[-1, -2], [2, 4], [-3, -6], [4, 8], [-5, -10]]:
-    feet.x = i[0]
-    feet.y = i[1]
-    feet.PlaySound(feet.sound_bank["roar"], Player)
-    print(i)
-
 
 
